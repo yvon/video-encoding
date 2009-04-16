@@ -61,6 +61,13 @@ h3 {
   padding: 5px;
   margin-top: 5px;
 }
+table {
+  border-collapse: collapse;
+}
+table td, table th {
+  border: 1px solid #ccc;
+  padding: 5px;
+}
 
 #left-container {
   float: left;

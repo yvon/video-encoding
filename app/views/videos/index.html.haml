@@ -1,1 +1,23 @@
-= "asdasd"
+#container
+  %h1 Videos
+  
+  .spacer
+  
+  %table
+    %tr
+      %th Id
+      %th Filename
+      %th Size
+      %th VideoId
+      %th Original
+      %th Sent?
+      %th CreatedAt
+    - @videos.each do |video|
+      %tr
+        %td= video.id
+        %td= video.filename
+        %td= video.size
+        %td= video.video_id
+        %td= video.original
+        %td= video.sent_to_heywatch
+        %td= video.created_at
