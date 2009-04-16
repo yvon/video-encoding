@@ -8,5 +8,13 @@ class Video
   property :filename, String
   property :revelatr_id, Integer
   property :original, String
-
+  property :size, Integer
+  
+  def content_type=(value)
+    nil
+  end
+  
+  def tempfile=(file)
+    nil
+  end
 end

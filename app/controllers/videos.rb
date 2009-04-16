@@ -1,6 +1,4 @@
 class Videos < Application
-  # provides :xml, :yaml, :js
-
   def index
     @videos = Video.all
     display @videos
@@ -12,13 +10,12 @@ class Videos < Application
     display @video
   end
 
-  def create(video)
-    @video = Video.new(video)
+  def create(file)    
+    @video = Video.new(file)
     if @video.save
-      redirect resource(@video), :message => {:notice => "Video was successfully created"}
+      render "OK", :status => 200
     else
-      message[:error] = "Video failed to be created"
-      render :new
+      render "KO", :status => 500
     end
   end
 end # Videos
