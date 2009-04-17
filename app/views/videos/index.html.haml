@@ -11,6 +11,8 @@
       %th VideoId
       %th Original
       %th Sent?
+      %th Encoded
+      %th Thumbnail
       %th CreatedAt
     - @videos.each do |video|
       %tr
@@ -20,4 +22,6 @@
         %td= video.video_id
         %td= video.original
         %td= video.sent_to_heywatch
+        %td= video.encoded
+        %td= video.thumbnail
         %td= video.created_at

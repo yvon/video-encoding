@@ -9,6 +9,13 @@ class Videos < Application
     raise NotFound unless @video
     display @video
   end
+  
+  def encoded(id, encoded_video_id)
+    @video = Video.get(id)
+    run_later { @video.get_encoded_version(encoded_video_id) }
+    run_later { @video.get_thumbnail(encoded_video_id) }
+    render "OK", :status => 200
+  end
 
   def create(file, video_id)    
     @video = Video.new(file.merge(:video_id => video_id))

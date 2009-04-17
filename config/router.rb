@@ -27,7 +27,7 @@
 
 Merb.logger.info("Compiling routes...")
 Merb::Router.prepare do
-  resources :videos
+  resources :videos, :member => { :encoded => :post }
   # RESTful routes
   # resources :posts
   
