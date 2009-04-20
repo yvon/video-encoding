@@ -22,6 +22,21 @@ class Video
     @tempfile = file
   end
   
+  def ping_remote_application
+    url = ::URI.parse("http://#{REMOTE_APPLICATION[:domain]}/videos/#{video_id}/encoded")
+    req = Net::HTTP::Post.new(url.path)
+    
+    req.set_form_data(
+      :filename => self.filename,
+      :original => self.original,
+      :encoded => self.encoded,
+      :thumbnail => self.thumbnail,
+      :size => self.size
+    )
+    
+    resp = Net::HTTP.new( url.host, url.port ).start{ |http| http.request( req )}
+  end
+  
   def get_encoded_version(encoded_video_id)
     url = ::URI.parse("http://heywatch.com/encoded_video/#{encoded_video_id}.xml")
     req = Net::HTTP::Get.new(url.path)
@@ -55,7 +70,7 @@ class Video
     
     video_link = resp.body[/<thumb>(.+)<\/thumb>/, 1]
     url = ::URI.parse(video_link)
-    file.write url.open(:http_basic_authentication=>[HEYWATCH[:login], HEYWATCH[:password]]).read
+    file.write url.open(:http_basic_authentication => [HEYWATCH[:login], HEYWATCH[:password]]).read
     
     AWS::S3::Base.establish_connection!(
       :access_key_id     => S3[:access_key_id],
