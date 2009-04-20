@@ -35,6 +35,7 @@ class Video
     )
     
     resp = Net::HTTP.new( url.host, url.port ).start{ |http| http.request( req )}
+    raise unless resp.code == '200'
   end
   
   def get_encoded_version(encoded_video_id)
