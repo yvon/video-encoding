@@ -2,7 +2,6 @@ require 'rubygems'
 require 'aws/s3'
 require 'net/http'
 require 'uri'
-require 'curl'
 require 'open-uri'
 
 class Video
@@ -41,12 +40,30 @@ class Video
       :secret_access_key => S3[:secret_access_key]
     ) unless AWS::S3::Base.connected?
     
-    AWS::S3::S3Object.store(title, file, encoded_bucket, :access => :public_read)
-    self.encoded = "http://s3.amazonaws.com/#{encoded_bucket}/#{title}" and self.save!
+    AWS::S3::S3Object.store(title + '.flv', file, encoded_bucket, :access => :public_read)
+    self.encoded = "http://s3.amazonaws.com/#{encoded_bucket}/#{title}.flv" and self.save!
   end
   
   def get_thumbnail(encoded_video_id)
-    nil
+    url = ::URI.parse("http://heywatch.com/encoded_video/#{encoded_video_id}.xml")
+    req = Net::HTTP::Get.new(url.path)
+    req.basic_auth HEYWATCH[:login], HEYWATCH[:password]
+    resp = Net::HTTP.new(url.host, url.port).start{ |http| http.request( req )}
+    raise 'Heywatch unable to get video attributes' unless resp.code == '200'
+
+    file = Tempfile.new('thumb')
+    
+    video_link = resp.body[/<thumb>(.+)<\/thumb>/, 1]
+    url = ::URI.parse(video_link)
+    file.write url.open(:http_basic_authentication=>[HEYWATCH[:login], HEYWATCH[:password]]).read
+    
+    AWS::S3::Base.establish_connection!(
+      :access_key_id     => S3[:access_key_id],
+      :secret_access_key => S3[:secret_access_key]
+    ) unless AWS::S3::Base.connected?
+    
+    AWS::S3::S3Object.store(title + '.jpg', file, encoded_bucket, :access => :public_read)
+    self.thumbnail = "http://s3.amazonaws.com/#{encoded_bucket}/#{title}.jpg" and self.save!
   end
   
   def upload_to_s3
@@ -56,7 +73,7 @@ class Video
       :secret_access_key => S3[:secret_access_key]
     ) unless AWS::S3::Base.connected?
     
-    AWS::S3::S3Object.store(s3_object, @tempfile, encoded_bucket, :access => :public_read)
+    AWS::S3::S3Object.store(s3_object, @tempfile, original_bucket, :access => :public_read)
     self.original = public_url and self.save!
   end
   
