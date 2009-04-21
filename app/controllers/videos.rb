@@ -1,4 +1,6 @@
 class Videos < Application
+  provides :html, :xml
+  
   def index
     @videos = Video.all
     display @videos
