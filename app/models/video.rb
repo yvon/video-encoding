@@ -17,7 +17,9 @@ class Video
   property    :content_type,      String
   property    :encoded,           String
   property    :thumbnail,         String
-    
+  
+  default_scope(:default).update(:order => [:created_at.desc], :limit => 100)
+  
   def tempfile=(file)
     @tempfile = file
   end
