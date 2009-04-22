@@ -17,7 +17,7 @@
     %tr
       %td= video.id
       %td= video.filename
-      %td= video.size
+      %td= number_to_human_size(video.size)
       %td= video.video_id
       %td= video.original
       %td= video.sent_to_heywatch
