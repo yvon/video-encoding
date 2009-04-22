@@ -19,8 +19,8 @@
       %td= video.filename
       %td= number_to_human_size(video.size)
       %td= video.video_id
-      %td= video.original
+      %td= s3_link(video.original)
       %td= video.sent_to_heywatch
-      %td= video.encoded
-      %td= video.thumbnail
+      %td= s3_link(video.encoded)
+      %td= s3_link(video.thumbnail)
       %td= video.created_at
