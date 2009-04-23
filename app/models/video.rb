@@ -115,7 +115,10 @@ class Video
   
   private
     def s3_object
-      @s3_object ||= title + File.extname(self.filename)
+      return @s3_object if @s3_object
+      extension = File.extname(self.filename)
+      extension = ".mkv" if extension.empty?
+      @s3_object = title + extension
     end
     
     def title
