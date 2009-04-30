@@ -8,15 +8,16 @@ class Video
   include DataMapper::Resource
   
   timestamps  :created_at
-  property    :id,                Serial
-  property    :sent_to_heywatch,  Boolean
-  property    :filename,          String
-  property    :video_id,          Integer
-  property    :original,          String
-  property    :size,              Integer
-  property    :content_type,      String
-  property    :encoded,           String
-  property    :thumbnail,         String
+  property    :id,                    Serial
+  property    :sent_to_heywatch,      Boolean
+  property    :successfully_encoded,  Boolean
+  property    :filename,              String
+  property    :video_id,              Integer
+  property    :original,              String
+  property    :size,                  Integer
+  property    :content_type,          String
+  property    :encoded,               String
+  property    :thumbnail,             String
   
   default_scope(:default).update(:order => [:created_at.desc], :limit => 100)
   
@@ -107,7 +108,8 @@ class Video
       :title => title,
       :format_id => '31',
       :automatic_encode => 'true',
-      :ping_url_after_encode => "http://#{HEYWATCH[:ping_domain]}/videos/#{self.id}/encoded"
+      :ping_url_after_encode => "http://#{HEYWATCH[:ping_domain]}/videos/#{self.id}/encoded",
+      :ping_url_if_error => "http://#{HEYWATCH[:ping_domain]}/videos/#{self.id}/error"
     )
     
     resp = Net::HTTP.new( url.host, url.port ).start{ |http| http.request( req )}
@@ -124,7 +126,9 @@ class Video
     end
     
     def title
-      @title ||= "#{self.id}_#{random_digits}"
+      return @title if @title
+      @title = "#{self.id}_#{random_digits}"
+      @title = 'test_' + @title unless Merb.env?('production')
     end
     
     def random_digits
