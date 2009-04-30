@@ -28,6 +28,13 @@ namespace :deploy do
     task t, :roles => :app do ; end
   end
   
+  task :migrate, :roles => :db, :only => { :primary => true } do
+    rake = fetch(:rake, "rake")
+    merb_env = fetch(:merb_env, "production")
+
+    run "cd #{directory}; #{rake} MERB_ENV=#{rails_env} #{migrate_env} db:autoupgrade"
+  end
+  
   desc "Copy config files into release path"
   task :copy_config_files do
     run "cp #{shared_path}/config/* #{release_path}/config/"
