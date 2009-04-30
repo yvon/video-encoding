@@ -32,7 +32,13 @@ namespace :deploy do
     rake = fetch(:rake, "rake")
     merb_env = fetch(:merb_env, "production")
 
-    run "cd #{directory}; #{rake} MERB_ENV=#{rails_env} #{migrate_env} db:autoupgrade"
+    directory = case migrate_target.to_sym
+      when :current then current_path
+      when :latest  then current_release
+      else raise ArgumentError, "unknown migration target #{migrate_target.inspect}"
+      end
+
+    run "cd #{directory}; #{rake} MERB_ENV=#{merb_env} db:autoupgrade"
   end
   
   desc "Copy config files into release path"
