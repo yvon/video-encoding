@@ -128,7 +128,6 @@ class Video
     def title
       return @title if @title
       @title = "#{self.id}_#{random_digits}"
-      @title = 'test_' + @title unless Merb.env?('production')
     end
     
     def random_digits
