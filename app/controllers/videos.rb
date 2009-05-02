@@ -31,8 +31,12 @@ class Videos < Application
     render "OK", :status => 200
   end
 
-  def create(file, video_id)    
-    @video = Video.new(file.merge(:video_id => video_id))
+  def create(file, video_id, application_domain)    
+    @video = Video.new(file.merge(
+      :video_id => video_id,
+      :application_domain => application_domain
+    ))
+
     if @video.save
       run_later do
         @video.upload_to_s3
