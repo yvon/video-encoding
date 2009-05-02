@@ -60,8 +60,7 @@ namespace :deploy do
   desc "Link shared files into release_path"
   task :link_shared_files, :roles => :app do
     run <<-CMD
-      ln -s #{shared_path}/production.db #{latest_release}/production.db && \
-      cd #{latest_release} && ln #{shared_path}/config.ru
+      ln -s #{shared_path}/production.db #{latest_release}/production.db
     CMD
   end
   after "deploy:update_code", "deploy:link_shared_files"
