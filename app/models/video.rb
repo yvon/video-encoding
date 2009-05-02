@@ -45,7 +45,7 @@ class Video
   def get_encoded_version(encoded_video_id)
     url = ::URI.parse("http://heywatch.com/encoded_video/#{encoded_video_id}.xml")
     req = Net::HTTP::Get.new(url.path)
-    req.basic_auth HEYWATCH[:login], HEYWATCH[:password]
+    req.basic_auth ENV['HEYWATCH_LOGIN'], ENV['HEYWATCH_PASSWORD']
     resp = Net::HTTP.new(url.host, url.port).start{ |http| http.request( req )}
     raise 'Heywatch unable to get video attributes' unless resp.code == '200'
 
@@ -53,12 +53,12 @@ class Video
     
     video_link = resp.body[/<link>(.+)<\/link>/, 1]
     url = ::URI.parse(video_link)
-    file.write url.open(:http_basic_authentication=>[HEYWATCH[:login], HEYWATCH[:password]]).read
+    file.write url.open(:http_basic_authentication=>[ENV['HEYWATCH_LOGIN'], ENV['HEYWATCH_PASSWORD']]).read
     file.close
     
     AWS::S3::Base.establish_connection!(
-      :access_key_id     => S3[:access_key_id],
-      :secret_access_key => S3[:secret_access_key]
+      :access_key_id     =>  ENV['S3_ACCESS_KEY_ID'],
+      :secret_access_key =>  ENV['S3_SECRET_ACCESS_KEY']
     ) unless AWS::S3::Base.connected?
     
     AWS::S3::S3Object.store(title + '.flv', File.open(file.path), encoded_bucket, :access => :public_read)
@@ -68,7 +68,7 @@ class Video
   def get_thumbnail(encoded_video_id)
     url = ::URI.parse("http://heywatch.com/encoded_video/#{encoded_video_id}.xml")
     req = Net::HTTP::Get.new(url.path)
-    req.basic_auth HEYWATCH[:login], HEYWATCH[:password]
+    req.basic_auth ENV['HEYWATCH_LOGIN'], ENV['HEYWATCH_PASSWORD']
     resp = Net::HTTP.new(url.host, url.port).start{ |http| http.request( req )}
     raise 'Heywatch unable to get video attributes' unless resp.code == '200'
 
@@ -76,12 +76,12 @@ class Video
     
     video_link = resp.body[/<thumb>(.+)<\/thumb>/, 1]
     url = ::URI.parse(video_link)
-    file.write url.open(:http_basic_authentication => [HEYWATCH[:login], HEYWATCH[:password]]).read
+    file.write url.open(:http_basic_authentication => [ENV['HEYWATCH_LOGIN'], ENV['HEYWATCH_PASSWORD']]).read
     file.close
     
     AWS::S3::Base.establish_connection!(
-      :access_key_id     => S3[:access_key_id],
-      :secret_access_key => S3[:secret_access_key]
+      :access_key_id     =>  ENV['S3_ACCESS_KEY_ID'],
+      :secret_access_key =>  ENV['S3_SECRET_ACCESS_KEY']
     ) unless AWS::S3::Base.connected?
     
     AWS::S3::S3Object.store(title + '.jpg', File.open(file.path), encoded_bucket, :access => :public_read)
@@ -91,8 +91,8 @@ class Video
   def upload_to_s3
     # TODO: Push in conf file
     AWS::S3::Base.establish_connection!(
-      :access_key_id     => S3[:access_key_id],
-      :secret_access_key => S3[:secret_access_key]
+      :access_key_id     =>  ENV['S3_ACCESS_KEY_ID'],
+      :secret_access_key =>  ENV['S3_SECRET_ACCESS_KEY']
     ) unless AWS::S3::Base.connected?
     
     AWS::S3::S3Object.store(s3_object, @tempfile, original_bucket, :access => :public_read)
@@ -102,15 +102,15 @@ class Video
   def from_s3_to_heywatch    
     url = ::URI.parse('http://heywatch.com/download.xml')
     req = Net::HTTP::Post.new(url.path)
-    req.basic_auth HEYWATCH[:login], HEYWATCH[:password]
+    req.basic_auth ENV['HEYWATCH_LOGIN'], ENV['HEYWATCH_PASSWORD']
     
     req.set_form_data(
       :url => self.original,
       :title => title,
       :format_id => '31',
       :automatic_encode => 'true',
-      :ping_url_after_encode => "http://#{HEYWATCH[:ping_domain]}/videos/#{self.id}/encoded",
-      :ping_url_if_error => "http://#{HEYWATCH[:ping_domain]}/videos/#{self.id}/error"
+      :ping_url_after_encode => "http://#{ENV['HEYWATCH_PING_DOMAIN']}/videos/#{self.id}/encoded",
+      :ping_url_if_error => "http://#{ENV['HEYWATCH_PING_DOMAIN']}/videos/#{self.id}/error"
     )
     
     resp = Net::HTTP.new( url.host, url.port ).start{ |http| http.request( req )}
@@ -136,11 +136,11 @@ class Video
     end
   
     def original_bucket
-      S3[:buckets][:original_videos]
+      ENV['S3_ORIGINAL_VIDEOS_BUCKET']
     end
     
     def encoded_bucket
-      S3[:buckets][:encoded_videos]
+      ENV['S3_ENCODED_VIDEOS_BUCKET']
     end
   
     def public_url
