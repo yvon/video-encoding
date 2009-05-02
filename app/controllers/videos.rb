@@ -15,10 +15,11 @@ class Videos < Application
   def encoded(id, encoded_video_id)
     @video = Video.get(id)
     @video.successfully_encoded = true
+    @video.heywatch_id = encoded_video_id
     @video.save(nil)
     run_later do
-      @video.get_encoded_version(encoded_video_id) &&
-        @video.get_thumbnail(encoded_video_id) &&
+      @video.get_encoded_version &&
+        @video.get_thumbnail &&
         @video.ping_remote_application
     end
     render "OK", :status => 200
