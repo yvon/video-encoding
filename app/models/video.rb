@@ -18,6 +18,7 @@ class Video
   property    :content_type,          String
   property    :encoded,               String
   property    :thumbnail,             String
+  property    :application_domain,    String
   
   default_scope(:default).update(:order => [:created_at.desc], :limit => 100)
   
@@ -26,7 +27,7 @@ class Video
   end
   
   def ping_remote_application
-    url = ::URI.parse("http://#{REMOTE_APPLICATION[:domain]}/videos/#{video_id}/encoded")
+    url = ::URI.parse("http://#{application_domain}/videos/#{video_id}/encoded")
     req = Net::HTTP::Post.new(url.path)
     
     req.set_form_data(

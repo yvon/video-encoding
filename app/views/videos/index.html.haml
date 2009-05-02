@@ -6,6 +6,7 @@
   %tr
     %th Id
     %th Filename
+    %th Domain
     %th Size
     %th VideoId
     %th Original
@@ -18,6 +19,7 @@
     %tr
       %td= video.id
       %td= video.filename
+      %td= video.application_domain
       %td{ :align => 'right' }= number_to_human_size(video.size)
       %td= video.video_id
       %td= s3_link(video.original)
