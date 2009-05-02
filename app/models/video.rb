@@ -11,13 +11,13 @@ class Video
   property    :id,                    Serial
   property    :sent_to_heywatch,      Boolean
   property    :successfully_encoded,  Boolean
-  property    :filename,              String
+  property    :filename,              String,   :size => 100
   property    :video_id,              Integer
-  property    :original,              String
+  property    :original,              String,   :size => 250
   property    :size,                  Integer
   property    :content_type,          String
-  property    :encoded,               String
-  property    :thumbnail,             String
+  property    :encoded,               String,   :size => 250
+  property    :thumbnail,             String,   :size => 250
   property    :application_domain,    String
   
   default_scope(:default).update(:order => [:created_at.desc], :limit => 100)
