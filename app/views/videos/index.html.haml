@@ -28,7 +28,7 @@
       %td= video.successfully_encoded
       %td= s3_link(video.encoded)
       %td= s3_link(video.thumbnail)
-      %td= video.created_at
+      %td= video.created_at.strftime("%Y/%m/%d %H:%M")
       %td
         = link_to 'Show', url(:video, video)
         = link_to 'Edit', url(:edit_video, video)
