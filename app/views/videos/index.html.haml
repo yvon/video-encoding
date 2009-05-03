@@ -15,6 +15,7 @@
     %th Encoded
     %th Thumbnail
     %th CreatedAt
+    %th -
   - @videos.each do |video|
     %tr
       %td= video.id
@@ -28,3 +29,5 @@
       %td= s3_link(video.encoded)
       %td= s3_link(video.thumbnail)
       %td= video.created_at
+      %td
+        = link_to 'Show', url(:video, video)

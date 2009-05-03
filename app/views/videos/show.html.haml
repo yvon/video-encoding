@@ -1,0 +1,54 @@
+%h1 About Video
+
+.spacer
+
+#infos.left
+  %h2 Attributes
+  %p
+    .label ID
+    .value= @video.id
+  %p
+    .label Filename
+    .value= @video.filename
+  %p
+    .label Content type
+    .value= @video.content_type
+  %p
+    .label Size
+    .value= @video.size
+  %p
+    .label Video ID
+    .value= @video.video_id
+  %p
+    .label Remote application domain
+    .value= @video.application_domain
+  %p
+    .label Original video (S3 URI)
+    .value= @video.original
+  %p
+    .label Sent to heywatch ?
+    .value= @video.sent_to_heywatch
+  %p
+    .label Successfully encoded ?
+    .value= @video.successfully_encoded
+  %p
+    .label Heywatch ID
+    .value= @video.heywatch_id
+  %p
+    .label Encoded video (S3 URI)
+    .value= @video.encoded
+  %p
+    .label Thumnail (S3 URI)
+    .value= @video.thumbnail
+
+.right
+  %h2 Actions
+  %p
+    %ul
+      %li
+        = button_to 'Send to Heywatch', url(:send_to_heywatch_video, @video), :method => :put
+        %ul
+          %li= button_to 'Get encoded version', url(:get_encoded_video, @video), :method => :put
+          %li= button_to 'Get Thumbnail', url(:get_thumbnail_video, @video), :method => :put
+          %li= button_to 'Ping Remote application', url(:ping_remote_app_video, @video), :method => :put
+      

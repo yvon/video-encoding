@@ -31,6 +31,30 @@ class Videos < Application
     @video.save(nil)
     render "OK", :status => 200
   end
+  
+  def send_to_heywatch(id)
+    @video = Video.get(id)
+    @video.from_s3_to_heywatch
+    render :template => 'videos/show'
+  end
+  
+  def get_encoded(id)
+    @video = Video.get(id)
+    @video.get_encoded_version
+    render :template => 'videos/show'
+  end
+  
+  def ping_remote_app(id)
+    @video = Video.get(id)
+    @video.ping_remote_application
+    render :template => 'videos/show'
+  end
+  
+  def get_thumbnail(id)
+    @video = Video.get(id)
+    @video.get_thumbnail
+    render :template => 'videos/show'
+  end
 
   def create(file, video_id, application_domain)    
     @video = Video.new(file.merge(
