@@ -3,7 +3,7 @@
 .spacer
 
 #infos.left
-  %h2 Attributes
+  %h2= "Attributes (#{link_to 'edit', resource(@video, :edit)})"
   %p
     .label ID
     .value= @video.id

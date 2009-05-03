@@ -1,0 +1,46 @@
+%h1 Edit Video
+
+.spacer
+
+%h2 Attributes
+
+= form_for @video, :action => url(:video, @video, :method => :put) do
+  %p
+    .label ID
+    .value= @video.id
+  %p
+    .label Filename
+    .value= @video.filename
+  %p
+    .label Content type
+    .value= @video.content_type
+  %p
+    .label Size
+    .value= @video.size
+  %p
+    .label Video ID
+    = text_field :video_id
+  %p
+    .label Remote application domain
+    = text_field :application_domain
+  %p
+    .label Original video (S3 URI)
+    = text_field :original, :size => 50
+  %p
+    .label Sent to heywatch ?
+    .value= @video.sent_to_heywatch
+  %p
+    .label Successfully encoded ?
+    .value= @video.successfully_encoded
+  %p
+    .label Heywatch ID
+    = text_field :heywatch_id
+  %p
+    .label Encoded video (S3 URI)
+    = text_field :encoded, :size => 50
+  %p
+    .label Thumnail (S3 URI)
+    = text_field :thumbnail, :size => 50
+  
+  .spacer
+  = button 'Save'

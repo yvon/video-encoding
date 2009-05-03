@@ -12,6 +12,17 @@ class Videos < Application
     display @video
   end
   
+  def edit(id)
+    @video = Video.get(id)
+    display @video
+  end
+  
+  def update(id, video)
+    @video = Video.get(id)
+    @video.update_attributes(video)
+    redirect resource(@video)
+  end
+  
   def encoded(id, encoded_video_id)
     @video = Video.get(id)
     @video.successfully_encoded = true
